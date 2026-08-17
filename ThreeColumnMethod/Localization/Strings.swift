@@ -31,6 +31,10 @@ enum Strings {
         "thought_records_empty_title": "No thought records yet",
         "thought_records_empty_body": "Tap + to write down an upsetting automatic thought, spot the distortion in it, and talk back with a rational response.",
         "belief_before_after": "Belief %1$d%% → %2$d%%",
+        "group_today": "Today",
+        "group_yesterday": "Yesterday",
+        "group_this_week": "This Week",
+        "group_this_month": "This Month",
 
         // Thought record detail (read-only)
         "situation_display_label": "Situation",
@@ -113,6 +117,15 @@ enum Strings {
         "data_import_choose_file": "Choose file",
         "cancel_desc": "Cancel",
 
+        // Privacy
+        "privacy_section_title": "Privacy",
+        "privacy_lock_label": "Require unlock to open app",
+        "privacy_lock_description": "Use Face ID, Touch ID, or your device passcode to open the app.",
+        "privacy_lock_unavailable": "Set up Face ID, Touch ID, or a passcode on this device to use this.",
+        "lock_screen_title": "Locked",
+        "lock_screen_subtitle": "Unlock to see your thought records and journal.",
+        "lock_screen_unlock_button": "Unlock",
+
         // About screen
         "about_technique_heading": "The Three-Column Technique",
         "about_technique_body": "This method, popularized by psychiatrist David Burns in \"Feeling Good: The New Mood Therapy,\" is a simple way to talk back to upsetting thoughts. Write down the automatic thought as it occurred to you, identify which distortion(s) are twisting your thinking, then write a rational response that answers the thought fairly. Rating how much you believe the thought before and after helps you see the shift.",
@@ -146,6 +159,10 @@ enum Strings {
         "thought_records_empty_title": "还没有任何记录",
         "thought_records_empty_body": "点击右下角的 + ，写下让你难受的自动化思维，找出其中的认知歪曲，再写下一个更合理的回应。",
         "belief_before_after": "相信程度 %1$d%% → %2$d%%",
+        "group_today": "今天",
+        "group_yesterday": "昨天",
+        "group_this_week": "本周",
+        "group_this_month": "本月",
 
         "situation_display_label": "情境",
         "distortions_none_selected": "未选择任何认知歪曲",
@@ -221,6 +238,15 @@ enum Strings {
         "data_import_format_distortion_codes": "\"distortions\" 可用的代码：",
         "data_import_choose_file": "选择文件",
         "cancel_desc": "取消",
+
+        // 隐私
+        "privacy_section_title": "隐私",
+        "privacy_lock_label": "打开应用时需要解锁",
+        "privacy_lock_description": "使用面容 ID、指纹或设备密码打开应用。",
+        "privacy_lock_unavailable": "请先在此设备上设置面容 ID、指纹或密码后再使用此功能。",
+        "lock_screen_title": "已锁定",
+        "lock_screen_subtitle": "解锁后即可查看你的思维记录和笔记本。",
+        "lock_screen_unlock_button": "解锁",
 
         "about_technique_heading": "三栏认知技术",
         "about_technique_body": "这个方法由精神科医生大卫·伯恩斯（David Burns）在《伯恩斯新情绪疗法》一书中推广，是一种回应让人难受的想法的简单方式。把自动化思维原样写下来，找出其中扭曲了你思考方式的认知歪曲，再写一个更公正、更有依据的合理回应。分别给这个想法在回应前后打一个相信程度的分数，可以帮你直观地看到这个转变。",

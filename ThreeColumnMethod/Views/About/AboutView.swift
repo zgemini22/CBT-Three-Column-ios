@@ -19,6 +19,7 @@ struct AboutView: View {
 
                 ThemePickerView()
                 LanguagePickerView()
+                PrivacySectionView()
                 DataTransferSectionView()
 
                 VStack(alignment: .leading, spacing: 4) {

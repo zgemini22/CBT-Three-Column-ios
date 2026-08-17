@@ -6,17 +6,30 @@ struct ThoughtRecordListView: View {
     @Query(sort: \ThoughtRecord.createdAt, order: .reverse) private var records: [ThoughtRecord]
     @State private var showingNewRecord = false
 
+    private var groups: [RecordGroup] {
+        groupByRecency(records)
+    }
+
     var body: some View {
         Group {
             if records.isEmpty {
                 emptyState
             } else {
                 List {
-                    ForEach(records) { record in
-                        NavigationLink(value: record) {
-                            ThoughtRecordRow(record: record)
+                    ForEach(groups) { group in
+                        Section {
+                            ForEach(group.records) { record in
+                                NavigationLink(value: record) {
+                                    ThoughtRecordRow(record: record)
+                                }
+                                .listRowBackground(palette.paperAlt)
+                            }
+                        } header: {
+                            Text(group.label)
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(palette.penBlue)
+                                .textCase(nil)
                         }
-                        .listRowBackground(palette.paperAlt)
                     }
                 }
                 .listStyle(.plain)
@@ -56,6 +69,58 @@ struct ThoughtRecordListView: View {
         }
         .padding(32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+private struct RecordGroup: Identifiable {
+    let id: String
+    let label: String
+    let records: [ThoughtRecord]
+}
+
+/// Buckets records (already sorted newest-first) into Today / Yesterday / This Week / This Month /
+/// "Month Year" groups. Because the input is sorted and the bucket thresholds only get older,
+/// a single pass preserves the right group order with no extra sorting.
+private func groupByRecency(_ records: [ThoughtRecord]) -> [RecordGroup] {
+    guard !records.isEmpty else { return [] }
+
+    let calendar = Calendar.current
+    let now = Date()
+    let startOfToday = calendar.startOfDay(for: now)
+    let startOfYesterday = calendar.date(byAdding: .day, value: -1, to: startOfToday) ?? startOfToday
+    let startOfThisWeek = calendar.dateInterval(of: .weekOfYear, for: now)?.start ?? startOfToday
+    let startOfThisMonth = calendar.dateInterval(of: .month, for: now)?.start ?? startOfToday
+
+    let monthYearFormatter = DateFormatter()
+    monthYearFormatter.locale = Locale(identifier: LocalizationManager.shared.effectiveLanguage)
+    monthYearFormatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
+
+    var order: [String] = []
+    var buckets: [String: [ThoughtRecord]] = [:]
+
+    for record in records {
+        let label: String
+        if record.createdAt >= startOfToday {
+            label = t("group_today")
+        } else if record.createdAt >= startOfYesterday {
+            label = t("group_yesterday")
+        } else if record.createdAt >= startOfThisWeek {
+            label = t("group_this_week")
+        } else if record.createdAt >= startOfThisMonth {
+            label = t("group_this_month")
+        } else {
+            label = monthYearFormatter.string(from: record.createdAt)
+        }
+
+        if buckets[label] == nil {
+            buckets[label] = []
+            order.append(label)
+        }
+        buckets[label]?.append(record)
+    }
+
+    return order.map { label in
+        RecordGroup(id: label, label: label, records: buckets[label] ?? [])
     }
 }
 
