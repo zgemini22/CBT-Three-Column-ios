@@ -5,12 +5,35 @@ struct JournalListView: View {
     @Environment(\.notebookPalette) private var palette
     @Query(sort: \JournalEntry.sortIndex, order: .reverse) private var entries: [JournalEntry]
     @State private var showingNewEntry = false
+    @State private var searchText = ""
+
+    private var isSearching: Bool { !searchText.isEmpty }
+
+    private var filteredEntries: [JournalEntry] {
+        guard isSearching else { return entries }
+        return entries.filter { $0.body.localizedCaseInsensitiveContains(searchText) }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             TopicHeader()
             if entries.isEmpty {
                 emptyState
+            } else if filteredEntries.isEmpty {
+                noResultsState
+            } else if isSearching {
+                // Reordering a filtered subset has no well-defined meaning, so search results
+                // are shown as a plain, non-draggable list instead of the reorderable one below.
+                List {
+                    ForEach(filteredEntries) { entry in
+                        NavigationLink(value: entry) {
+                            JournalEntryRow(entry: entry)
+                        }
+                        .listRowBackground(palette.paper)
+                    }
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
             } else {
                 List {
                     ForEach(entries) { entry in
@@ -29,9 +52,10 @@ struct JournalListView: View {
         .navigationDestination(for: JournalEntry.self) { entry in
             JournalEntryView(entry: entry)
         }
+        .searchable(text: $searchText, prompt: Text(t("search_hint")))
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                if !entries.isEmpty {
+                if !entries.isEmpty && !isSearching {
                     EditButton()
                 }
             }
@@ -68,6 +92,18 @@ struct JournalListView: View {
                 .font(.body)
                 .foregroundStyle(palette.inkFaded)
                 .multilineTextAlignment(.center)
+        }
+        .padding(32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var noResultsState: some View {
+        VStack(spacing: 8) {
+            Text(t("search_no_results_title"))
+                .font(.title3.weight(.semibold))
+            Text(t("search_no_results_body"))
+                .font(.body)
+                .foregroundStyle(palette.inkFaded)
         }
         .padding(32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -5,15 +5,23 @@ struct ThoughtRecordListView: View {
     @Environment(\.notebookPalette) private var palette
     @Query(sort: \ThoughtRecord.createdAt, order: .reverse) private var records: [ThoughtRecord]
     @State private var showingNewRecord = false
+    @State private var searchText = ""
+
+    private var filteredRecords: [ThoughtRecord] {
+        guard !searchText.isEmpty else { return records }
+        return records.filter { matches($0, searchText) }
+    }
 
     private var groups: [RecordGroup] {
-        groupByRecency(records)
+        groupByRecency(filteredRecords)
     }
 
     var body: some View {
         Group {
             if records.isEmpty {
                 emptyState
+            } else if groups.isEmpty {
+                noResultsState
             } else {
                 List {
                     ForEach(groups) { group in
@@ -41,6 +49,7 @@ struct ThoughtRecordListView: View {
         .navigationDestination(for: ThoughtRecord.self) { record in
             ThoughtRecordDetailView(record: record)
         }
+        .searchable(text: $searchText, prompt: Text(t("search_hint")))
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -70,6 +79,25 @@ struct ThoughtRecordListView: View {
         .padding(32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+
+    private var noResultsState: some View {
+        VStack(spacing: 8) {
+            Text(t("search_no_results_title"))
+                .font(.title3.weight(.semibold))
+            Text(t("search_no_results_body"))
+                .font(.body)
+                .foregroundStyle(palette.inkFaded)
+        }
+        .padding(32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+private func matches(_ record: ThoughtRecord, _ query: String) -> Bool {
+    record.situation.localizedCaseInsensitiveContains(query) ||
+        record.automaticThought.localizedCaseInsensitiveContains(query) ||
+        record.rationalResponse.localizedCaseInsensitiveContains(query) ||
+        record.distortions.contains { $0.label.localizedCaseInsensitiveContains(query) }
 }
 
 private struct RecordGroup: Identifiable {

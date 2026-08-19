@@ -35,6 +35,9 @@ enum Strings {
         "group_yesterday": "Yesterday",
         "group_this_week": "This Week",
         "group_this_month": "This Month",
+        "search_hint": "Search",
+        "search_no_results_title": "No matches",
+        "search_no_results_body": "Try a different search.",
 
         // Thought record detail (read-only)
         "situation_display_label": "Situation",
@@ -163,6 +166,9 @@ enum Strings {
         "group_yesterday": "昨天",
         "group_this_week": "本周",
         "group_this_month": "本月",
+        "search_hint": "搜索",
+        "search_no_results_title": "没有匹配结果",
+        "search_no_results_body": "换个关键词试试。",
 
         "situation_display_label": "情境",
         "distortions_none_selected": "未选择任何认知歪曲",
