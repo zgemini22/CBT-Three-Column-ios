@@ -123,7 +123,7 @@ private struct DetailSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("\(number). \(title)")
-                .font(.headline)
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(palette.penBlue)
             content
         }

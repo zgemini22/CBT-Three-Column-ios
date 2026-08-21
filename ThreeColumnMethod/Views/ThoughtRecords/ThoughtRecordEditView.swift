@@ -135,7 +135,7 @@ private struct SectionHeader: View {
 
     var body: some View {
         Text("\(number). \(title)")
-            .font(.headline)
+            .font(.subheadline.weight(.semibold))
             .foregroundStyle(palette.penBlue)
     }
 }
