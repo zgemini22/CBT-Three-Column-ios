@@ -42,7 +42,7 @@ struct ThoughtRecordDetailView: View {
                             .font(.body)
                             .foregroundStyle(palette.inkFaded)
                     } else {
-                        Text(record.distortions.map(\.label).joined(separator: " · "))
+                        Text(record.distortions.map(\.numberedLabel).joined(separator: " · "))
                             .font(.body)
                     }
                 }
@@ -105,7 +105,7 @@ struct ThoughtRecordDetailView: View {
         lines.append(t("belief_before_display", record.beliefBefore))
         lines.append("")
         lines.append("2. \(t("section_distortions"))")
-        lines.append(record.distortions.isEmpty ? t("distortions_none_selected") : record.distortions.map(\.label).joined(separator: " · "))
+        lines.append(record.distortions.isEmpty ? t("distortions_none_selected") : record.distortions.map(\.numberedLabel).joined(separator: " · "))
         lines.append("")
         lines.append("3. \(t("section_rational_response"))")
         lines.append(record.rationalResponse)
@@ -123,8 +123,8 @@ private struct DetailSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("\(number). \(title)")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(palette.penBlue)
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
             content
         }
     }

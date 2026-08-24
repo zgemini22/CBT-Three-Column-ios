@@ -53,4 +53,9 @@ enum CognitiveDistortion: String, CaseIterable, Codable, Identifiable, Hashable 
 
     var label: String { t(labelKey) }
     var descriptionText: String { t(descriptionKey) }
+
+    /// This distortion's fixed position (1-11) in the list, e.g. "5. Mind Reading" — mirroring
+    /// how "Feeling Good" itself presents the distortions as a numbered list.
+    var number: Int { Self.allCases.firstIndex(of: self)! + 1 }
+    var numberedLabel: String { "\(number). \(label)" }
 }

@@ -58,7 +58,7 @@ struct ThoughtRecordEditView: View {
                     }
                 }
                 ForEach(CognitiveDistortion.allCases.filter { selectedDistortions.contains($0) }) { distortion in
-                    Text("\(distortion.label): \(distortion.descriptionText)")
+                    Text("\(distortion.numberedLabel): \(distortion.descriptionText)")
                         .font(.caption)
                         .foregroundStyle(palette.inkFaded)
                 }
@@ -137,8 +137,8 @@ private struct SectionHeader: View {
 
     var body: some View {
         Text("\(number). \(title)")
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(palette.penBlue)
+            .font(.caption)
+            .foregroundStyle(palette.inkFaded)
     }
 }
 
@@ -163,7 +163,7 @@ private struct DistortionChip: View {
 
     var body: some View {
         Button(action: action) {
-            Text(distortion.label)
+            Text(distortion.numberedLabel)
                 .font(.caption)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
