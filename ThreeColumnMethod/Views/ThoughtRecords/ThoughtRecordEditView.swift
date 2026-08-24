@@ -33,9 +33,10 @@ struct ThoughtRecordEditView: View {
                 }
 
                 SectionHeader(number: "1", title: t("section_automatic_thought"))
-                TextField(t("automatic_thought_placeholder"), text: $automaticThought, axis: .vertical)
+                TextField("", text: $automaticThought, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
                     .lineLimit(2...6)
+                    .accessibilityLabel(t("section_automatic_thought"))
                 BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
 
                 SectionHeader(number: "2", title: t("section_distortions"))
@@ -63,9 +64,10 @@ struct ThoughtRecordEditView: View {
                 }
 
                 SectionHeader(number: "3", title: t("section_rational_response"))
-                TextField(t("rational_response_placeholder"), text: $rationalResponse, axis: .vertical)
+                TextField("", text: $rationalResponse, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
                     .lineLimit(2...6)
+                    .accessibilityLabel(t("section_rational_response"))
                 BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
             }
             .padding(16)

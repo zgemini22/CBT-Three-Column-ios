@@ -51,12 +51,10 @@ enum Strings {
         "situation_label": "Situation (optional)",
         "situation_placeholder": "What was happening when the thought showed up?",
         "section_automatic_thought": "Automatic Thought",
-        "automatic_thought_placeholder": "The upsetting thought that popped into your mind",
         "belief_before_label": "How much did you believe it?",
         "section_distortions": "Cognitive Distortion(s)",
         "distortions_hint": "Tap any that apply — descriptions appear below once selected.",
         "section_rational_response": "Rational Response",
-        "rational_response_placeholder": "Talk back to the distorted thought with a fairer, evidence-based response",
         "belief_after_label": "How much do you believe the automatic thought now?",
 
         // Cognitive distortions
@@ -180,12 +178,10 @@ enum Strings {
         "situation_label": "情境（选填）",
         "situation_placeholder": "这个想法出现时，你正在经历什么？",
         "section_automatic_thought": "自动化思维",
-        "automatic_thought_placeholder": "脑海中突然冒出来的、让你难受的想法",
         "belief_before_label": "你当时有多相信这个想法？",
         "section_distortions": "认知歪曲",
         "distortions_hint": "点击选中所有符合的类型，选中后下方会显示说明。",
         "section_rational_response": "合理回应",
-        "rational_response_placeholder": "用更公正、有依据的想法回应这个歪曲的念头",
         "belief_after_label": "现在你还有多相信这个自动化思维？",
 
         "distortion_all_or_nothing_label": "非黑即白思维",
