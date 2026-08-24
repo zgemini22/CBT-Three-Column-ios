@@ -31,11 +31,6 @@ final class ThoughtRecord {
     }
 
     var distortions: [CognitiveDistortion] {
-        // A record saved while Mind Reading/Fortune Telling were still split could have both
-        // legacy keys stored; resolve() maps both to .mindReading, so dedup to avoid showing it twice.
-        var seen = Set<CognitiveDistortion>()
-        return distortionKeys
-            .compactMap { CognitiveDistortion.resolve(rawValue: $0) }
-            .filter { seen.insert($0).inserted }
+        distortionKeys.compactMap { CognitiveDistortion(rawValue: $0) }
     }
 }

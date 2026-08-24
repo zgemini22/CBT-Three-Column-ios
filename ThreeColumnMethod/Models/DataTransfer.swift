@@ -65,10 +65,7 @@ enum DataTransfer {
                 let beliefBefore = (obj["beliefBefore"] as? Int) ?? 0
                 let beliefAfter = (obj["beliefAfter"] as? Int) ?? 0
                 let distortionCodes = obj["distortions"] as? [String] ?? []
-                var seenDistortions = Set<CognitiveDistortion>()
-                let distortions = distortionCodes
-                    .compactMap { CognitiveDistortion.resolve(rawValue: $0) }
-                    .filter { seenDistortions.insert($0).inserted }
+                let distortions = distortionCodes.compactMap { CognitiveDistortion(rawValue: $0) }
                 let createdAt: Date
                 if let millis = obj["createdAt"] as? Int64 {
                     createdAt = Date(timeIntervalSince1970: Double(millis) / 1000)
