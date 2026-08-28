@@ -170,9 +170,16 @@ private struct ThoughtRecordRow: View {
                     .font(.caption)
                     .foregroundStyle(palette.penBlue)
             }
-            Text(t("belief_before_after", record.beliefBefore, record.beliefAfter))
-                .font(.caption)
-                .foregroundStyle(palette.inkFaded)
+            HStack(spacing: 4) {
+                Text("\(record.beliefBefore)%")
+                // A drawn SF Symbol, not a text arrow glyph, so it's always centered in this row
+                // regardless of the font's own (often bottom-heavy) arrow glyph metrics.
+                Image(systemName: "arrow.right")
+                    .font(.system(size: 10))
+                Text("\(record.beliefAfter)%")
+            }
+            .font(.caption)
+            .foregroundStyle(palette.inkFaded)
         }
         .padding(.vertical, 6)
     }
