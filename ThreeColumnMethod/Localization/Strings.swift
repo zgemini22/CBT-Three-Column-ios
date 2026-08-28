@@ -51,11 +51,11 @@ enum Strings {
         "situation_label": "Situation (optional)",
         "situation_placeholder": "What was happening when the thought showed up?",
         "section_automatic_thought": "Automatic Thought",
-        "belief_before_label": "How much did you believe it?",
+        "belief_before_label": "Before",
         "section_distortions": "Cognitive Distortion(s)",
         "distortions_hint": "Tap any that apply — descriptions appear below once selected.",
         "section_rational_response": "Rational Response",
-        "belief_after_label": "How much do you believe the automatic thought now?",
+        "belief_after_label": "After",
 
         // Cognitive distortions
         "distortion_all_or_nothing_label": "All-or-Nothing Thinking",
@@ -178,11 +178,11 @@ enum Strings {
         "situation_label": "情境（选填）",
         "situation_placeholder": "这个想法出现时，你正在经历什么？",
         "section_automatic_thought": "自动化思维",
-        "belief_before_label": "你当时有多相信这个想法？",
+        "belief_before_label": "之前",
         "section_distortions": "认知歪曲",
         "distortions_hint": "点击选中所有符合的类型，选中后下方会显示说明。",
         "section_rational_response": "合理回应",
-        "belief_after_label": "现在你还有多相信这个自动化思维？",
+        "belief_after_label": "之后",
 
         "distortion_all_or_nothing_label": "非黑即白思维",
         "distortion_all_or_nothing_desc": "你把事情简单地分成好或坏两个极端，只要结果没有达到完美，就把它看作彻底的失败。",
