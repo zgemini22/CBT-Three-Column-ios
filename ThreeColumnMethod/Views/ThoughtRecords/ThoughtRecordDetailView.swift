@@ -28,6 +28,10 @@ struct ThoughtRecordDetailView: View {
                 DetailSection(number: "1", title: t("section_automatic_thought")) {
                     Text(record.automaticThought)
                         .font(.body)
+                    Text(t("belief_before_after", record.beliefBefore, record.beliefAfter))
+                        .font(.caption)
+                        .foregroundStyle(palette.inkFaded)
+                        .padding(.top, 4)
                 }
 
                 Divider()
@@ -48,10 +52,6 @@ struct ThoughtRecordDetailView: View {
                 DetailSection(number: "3", title: t("section_rational_response")) {
                     Text(record.rationalResponse)
                         .font(.body)
-                    Text(t("belief_before_after", record.beliefBefore, record.beliefAfter))
-                        .font(.caption)
-                        .foregroundStyle(palette.inkFaded)
-                        .padding(.top, 4)
                 }
             }
             .padding(16)
