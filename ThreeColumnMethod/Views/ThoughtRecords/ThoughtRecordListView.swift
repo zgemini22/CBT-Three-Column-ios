@@ -166,7 +166,7 @@ private struct ThoughtRecordRow: View {
                 .foregroundStyle(palette.ink)
                 .lineLimit(3)
             if !record.distortions.isEmpty {
-                Text(record.distortions.map(\.numberedLabel).joined(separator: " · "))
+                Text(record.distortions.map(\.label).joined(separator: " · "))
                     .font(.caption)
                     .foregroundStyle(palette.penBlue)
             }
