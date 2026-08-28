@@ -31,7 +31,7 @@ struct AboutView: View {
                             openURL(url)
                         }
                     } label: {
-                        Text("\(t("about_license_label")): \(t("license_url"))")
+                        Text(t("about_license_label"))
                             .font(.caption)
                             .foregroundStyle(palette.penBlue)
                             .underline()

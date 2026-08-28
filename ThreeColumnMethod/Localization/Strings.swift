@@ -138,7 +138,7 @@ enum Strings {
 
         // Proper names / fixed data, intentionally identical in every locale
         "author_name": "Shengxing Zhang",
-        "license_url": "https://52.77.216.225/psychology/cbt/three-column-notebook/license/"
+        "license_url": "https://ztimelightspacestar.com/apps/three-column-method/"
     ]
 
     // MARK: - Chinese (Simplified)
@@ -260,6 +260,6 @@ enum Strings {
 
         // Proper names / fixed data, intentionally identical in every locale
         "author_name": "Shengxing Zhang",
-        "license_url": "https://52.77.216.225/psychology/cbt/three-column-notebook/license/"
+        "license_url": "https://ztimelightspacestar.com/apps/three-column-method/"
     ]
 }
