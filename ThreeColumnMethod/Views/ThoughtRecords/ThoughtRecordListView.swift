@@ -172,7 +172,7 @@ private struct ThoughtRecordRow: View {
             }
             Text(t("belief_before_after", record.beliefBefore, record.beliefAfter))
                 .font(.caption)
-                .foregroundStyle(palette.inkFaded)
+                .foregroundStyle(palette.penBlue)
         }
         .padding(.vertical, 6)
     }
