@@ -44,6 +44,8 @@ enum Strings {
         "distortions_none_selected": "No distortions selected",
         "belief_before_display": "Before %1$d%%",
         "belief_after_display": "After %1$d%%",
+        "summary_show": "Show details",
+        "summary_hide": "Hide details",
 
         // Thought record edit
         "new_thought_record_title": "New thought record",
@@ -172,6 +174,8 @@ enum Strings {
         "distortions_none_selected": "未选择任何认知歪曲",
         "belief_before_display": "之前 %1$d%%",
         "belief_after_display": "之后 %1$d%%",
+        "summary_show": "显示详情",
+        "summary_hide": "隐藏详情",
 
         "new_thought_record_title": "新建思维记录",
         "edit_thought_record_title": "编辑思维记录",

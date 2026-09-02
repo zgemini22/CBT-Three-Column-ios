@@ -17,6 +17,7 @@ struct ThoughtRecordEditView: View {
     @State private var beliefAfter: Double = 30
     @State private var selectedDistortions: Set<CognitiveDistortion> = []
     @State private var currentPage = 0
+    @State private var summaryExpanded = false
 
     private var canSave: Bool {
         !automaticThought.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -120,28 +121,46 @@ struct ThoughtRecordEditView: View {
     }
 
     /// Situation, the three section titles, and the before/after belief sliders once, in one place.
+    /// Collapsed by default so the thought/response fields stay at the top of the screen.
     @ViewBuilder
     private var summaryCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(t("situation_label"))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(palette.inkFaded)
-                TextField(t("situation_placeholder"), text: $situation, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
+            Button {
+                withAnimation { summaryExpanded.toggle() }
+            } label: {
+                HStack {
+                    Text(t(summaryExpanded ? "summary_hide" : "summary_show"))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(palette.inkFaded)
+                    Spacer()
+                    Image(systemName: summaryExpanded ? "chevron.up" : "chevron.down")
+                        .foregroundStyle(palette.inkFaded)
+                }
+                .contentShape(Rectangle())
             }
-            Divider()
-            Text("1. \(t("section_automatic_thought"))")
-                .font(.caption)
-                .foregroundStyle(palette.inkFaded)
-            Text("2. \(t("section_distortions"))")
-                .font(.caption)
-                .foregroundStyle(palette.inkFaded)
-            Text("3. \(t("section_rational_response"))")
-                .font(.caption)
-                .foregroundStyle(palette.inkFaded)
-            BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
-            BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
+            .buttonStyle(.plain)
+
+            if summaryExpanded {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(t("situation_label"))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(palette.inkFaded)
+                    TextField(t("situation_placeholder"), text: $situation, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                }
+                Divider()
+                Text("1. \(t("section_automatic_thought"))")
+                    .font(.caption)
+                    .foregroundStyle(palette.inkFaded)
+                Text("2. \(t("section_distortions"))")
+                    .font(.caption)
+                    .foregroundStyle(palette.inkFaded)
+                Text("3. \(t("section_rational_response"))")
+                    .font(.caption)
+                    .foregroundStyle(palette.inkFaded)
+                BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
+                BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
+            }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
