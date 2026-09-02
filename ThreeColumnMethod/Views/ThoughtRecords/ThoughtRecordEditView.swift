@@ -34,31 +34,29 @@ struct ThoughtRecordEditView: View {
         Group {
             if isWideScreen {
                 ScrollView {
-                    HStack(alignment: .top, spacing: 16) {
-                        automaticThoughtColumn().frame(maxWidth: .infinity, alignment: .leading)
-                        Divider()
-                        distortionsColumn().frame(maxWidth: .infinity, alignment: .leading)
-                        Divider()
-                        rationalResponseColumn().frame(maxWidth: .infinity, alignment: .leading)
+                    VStack(alignment: .leading, spacing: 20) {
+                        situationField
+                        HStack(alignment: .top, spacing: 16) {
+                            automaticThoughtColumn.frame(maxWidth: .infinity, alignment: .leading)
+                            Divider()
+                            distortionsColumn.frame(maxWidth: .infinity, alignment: .leading)
+                            Divider()
+                            rationalResponseColumn.frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
                     .padding(16)
                 }
             } else {
                 VStack(spacing: 0) {
-                    PageTabRow(
-                        titles: [
-                            "1. \(t("section_automatic_thought"))",
-                            "2. \(t("section_distortions"))",
-                            "3. \(t("section_rational_response"))"
-                        ],
-                        currentPage: $currentPage
-                    )
-                    .padding(.horizontal, 8)
+                    situationField
+                        .padding(16)
+                    PageTabRow(pageCount: 3, currentPage: $currentPage)
+                        .padding(.horizontal, 8)
                     Divider()
                     TabView(selection: $currentPage) {
-                        ScrollView { automaticThoughtColumn(showHeader: false).padding(16) }.tag(0)
-                        ScrollView { distortionsColumn(showHeader: false).padding(16) }.tag(1)
-                        ScrollView { rationalResponseColumn(showHeader: false).padding(16) }.tag(2)
+                        ScrollView { automaticThoughtColumn.padding(16) }.tag(0)
+                        ScrollView { distortionsColumn.padding(16) }.tag(1)
+                        ScrollView { rationalResponseColumn.padding(16) }.tag(2)
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
                 }
@@ -133,13 +131,9 @@ struct ThoughtRecordEditView: View {
     }
 
     @ViewBuilder
-    private func automaticThoughtColumn(showHeader: Bool = true) -> some View {
+    private var automaticThoughtColumn: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if showHeader {
-                SectionHeader(number: "1", title: t("section_automatic_thought"))
-            }
-            situationField
-            Divider()
+            SectionHeader(number: "1", title: t("section_automatic_thought"))
             TextField("", text: $automaticThought, axis: .vertical)
                 .textFieldStyle(.roundedBorder)
                 .lineLimit(2...6)
@@ -149,11 +143,9 @@ struct ThoughtRecordEditView: View {
     }
 
     @ViewBuilder
-    private func distortionsColumn(showHeader: Bool = true) -> some View {
+    private var distortionsColumn: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if showHeader {
-                SectionHeader(number: "2", title: t("section_distortions"))
-            }
+            SectionHeader(number: "2", title: t("section_distortions"))
             Text(t("distortions_hint"))
                 .font(.caption)
                 .foregroundStyle(palette.inkFaded)
@@ -180,11 +172,9 @@ struct ThoughtRecordEditView: View {
     }
 
     @ViewBuilder
-    private func rationalResponseColumn(showHeader: Bool = true) -> some View {
+    private var rationalResponseColumn: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if showHeader {
-                SectionHeader(number: "3", title: t("section_rational_response"))
-            }
+            SectionHeader(number: "3", title: t("section_rational_response"))
             TextField("", text: $rationalResponse, axis: .vertical)
                 .textFieldStyle(.roundedBorder)
                 .lineLimit(2...6)

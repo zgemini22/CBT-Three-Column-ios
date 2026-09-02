@@ -22,31 +22,33 @@ struct ThoughtRecordDetailView: View {
         Group {
             if isWideScreen {
                 ScrollView {
-                    HStack(alignment: .top, spacing: 16) {
-                        automaticThoughtSection().frame(maxWidth: .infinity, alignment: .leading)
-                        Divider()
-                        distortionsSection().frame(maxWidth: .infinity, alignment: .leading)
-                        Divider()
-                        rationalResponseSection().frame(maxWidth: .infinity, alignment: .leading)
+                    VStack(alignment: .leading, spacing: 20) {
+                        if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            situationBlock
+                        }
+                        HStack(alignment: .top, spacing: 16) {
+                            automaticThoughtSection.frame(maxWidth: .infinity, alignment: .leading)
+                            Divider()
+                            distortionsSection.frame(maxWidth: .infinity, alignment: .leading)
+                            Divider()
+                            rationalResponseSection.frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
                     .padding(16)
                 }
             } else {
                 VStack(spacing: 0) {
-                    PageTabRow(
-                        titles: [
-                            "1. \(t("section_automatic_thought"))",
-                            "2. \(t("section_distortions"))",
-                            "3. \(t("section_rational_response"))"
-                        ],
-                        currentPage: $currentPage
-                    )
-                    .padding(.horizontal, 8)
+                    if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        situationBlock
+                            .padding(16)
+                    }
+                    PageTabRow(pageCount: 3, currentPage: $currentPage)
+                        .padding(.horizontal, 8)
                     Divider()
                     TabView(selection: $currentPage) {
-                        ScrollView { automaticThoughtSection(showHeader: false).padding(16) }.tag(0)
-                        ScrollView { distortionsSection(showHeader: false).padding(16) }.tag(1)
-                        ScrollView { rationalResponseSection(showHeader: false).padding(16) }.tag(2)
+                        ScrollView { automaticThoughtSection.padding(16) }.tag(0)
+                        ScrollView { distortionsSection.padding(16) }.tag(1)
+                        ScrollView { rationalResponseSection.padding(16) }.tag(2)
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
                 }
@@ -120,11 +122,8 @@ struct ThoughtRecordDetailView: View {
     }
 
     @ViewBuilder
-    private func automaticThoughtSection(showHeader: Bool = true) -> some View {
-        DetailSection(number: "1", title: t("section_automatic_thought"), showHeader: showHeader) {
-            if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                situationBlock
-            }
+    private var automaticThoughtSection: some View {
+        DetailSection(number: "1", title: t("section_automatic_thought")) {
             Text(record.automaticThought)
                 .font(.body)
             Text(t("belief_before_display", record.beliefBefore))
@@ -135,8 +134,8 @@ struct ThoughtRecordDetailView: View {
     }
 
     @ViewBuilder
-    private func distortionsSection(showHeader: Bool = true) -> some View {
-        DetailSection(number: "2", title: t("section_distortions"), showHeader: showHeader) {
+    private var distortionsSection: some View {
+        DetailSection(number: "2", title: t("section_distortions")) {
             if record.distortions.isEmpty {
                 Text(t("distortions_none_selected"))
                     .font(.body)
@@ -149,8 +148,8 @@ struct ThoughtRecordDetailView: View {
     }
 
     @ViewBuilder
-    private func rationalResponseSection(showHeader: Bool = true) -> some View {
-        DetailSection(number: "3", title: t("section_rational_response"), showHeader: showHeader) {
+    private var rationalResponseSection: some View {
+        DetailSection(number: "3", title: t("section_rational_response")) {
             Text(record.rationalResponse)
                 .font(.body)
             Text(t("belief_after_display", record.beliefAfter))
@@ -165,16 +164,13 @@ private struct DetailSection<Content: View>: View {
     @Environment(\.notebookPalette) private var palette
     let number: String
     let title: String
-    var showHeader: Bool = true
     @ViewBuilder let content: Content
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if showHeader {
-                Text("\(number). \(title)")
-                    .font(.caption)
-                    .foregroundStyle(palette.inkFaded)
-            }
+            Text("\(number). \(title)")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
             content
         }
     }
