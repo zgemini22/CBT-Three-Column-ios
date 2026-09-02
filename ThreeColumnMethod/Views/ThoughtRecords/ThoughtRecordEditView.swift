@@ -16,6 +16,7 @@ struct ThoughtRecordEditView: View {
     @State private var beliefBefore: Double = 70
     @State private var beliefAfter: Double = 30
     @State private var selectedDistortions: Set<CognitiveDistortion> = []
+    @State private var currentPage = 0
 
     private var canSave: Bool {
         !automaticThought.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -23,38 +24,43 @@ struct ThoughtRecordEditView: View {
     }
 
     /// Three side-by-side columns only make sense with room to breathe (iPad, or an iPhone in
-    /// landscape with a Plus/Pro Max-class width); otherwise stay stacked so text fields aren't
-    /// squeezed too narrow to use.
+    /// landscape with a Plus/Pro Max-class width); otherwise switch to three swipeable/tappable
+    /// pages so text fields aren't squeezed too narrow to use.
     private var isWideScreen: Bool {
         horizontalSizeClass == .regular
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(t("situation_label"))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(palette.inkFaded)
-                    TextField(t("situation_placeholder"), text: $situation, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                }
-
-                if isWideScreen {
-                    HStack(alignment: .top, spacing: 16) {
-                        automaticThoughtColumn.frame(maxWidth: .infinity, alignment: .leading)
-                        Divider()
-                        distortionsColumn.frame(maxWidth: .infinity, alignment: .leading)
-                        Divider()
-                        rationalResponseColumn.frame(maxWidth: .infinity, alignment: .leading)
+        Group {
+            if isWideScreen {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        situationField
+                        HStack(alignment: .top, spacing: 16) {
+                            automaticThoughtColumn.frame(maxWidth: .infinity, alignment: .leading)
+                            Divider()
+                            distortionsColumn.frame(maxWidth: .infinity, alignment: .leading)
+                            Divider()
+                            rationalResponseColumn.frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
-                } else {
-                    automaticThoughtColumn
-                    distortionsColumn
-                    rationalResponseColumn
+                    .padding(16)
+                }
+            } else {
+                VStack(spacing: 0) {
+                    situationField
+                        .padding(16)
+                    PageTabRow(pageCount: 3, currentPage: $currentPage)
+                        .padding(.horizontal, 8)
+                    Divider()
+                    TabView(selection: $currentPage) {
+                        ScrollView { automaticThoughtColumn.padding(16) }.tag(0)
+                        ScrollView { distortionsColumn.padding(16) }.tag(1)
+                        ScrollView { rationalResponseColumn.padding(16) }.tag(2)
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
                 }
             }
-            .padding(16)
         }
         .background(palette.paper)
         .navigationTitle(record == nil ? t("new_thought_record_title") : t("edit_thought_record_title"))
@@ -111,6 +117,17 @@ struct ThoughtRecordEditView: View {
             modelContext.insert(newRecord)
         }
         dismiss()
+    }
+
+    @ViewBuilder
+    private var situationField: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(t("situation_label"))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(palette.inkFaded)
+            TextField(t("situation_placeholder"), text: $situation, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
+        }
     }
 
     @ViewBuilder

@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "687F87D7724D44681383145A"
+               BlueprintIdentifier = "09B2F02BFE813A4035F63039"
                BuildableName = "ThreeColumnMethod.app"
                BlueprintName = "ThreeColumnMethod"
                ReferencedContainer = "container:ThreeColumnMethod.xcodeproj">
@@ -44,7 +44,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "687F87D7724D44681383145A"
+            BlueprintIdentifier = "09B2F02BFE813A4035F63039"
             BuildableName = "ThreeColumnMethod.app"
             BlueprintName = "ThreeColumnMethod"
             ReferencedContainer = "container:ThreeColumnMethod.xcodeproj">
@@ -61,7 +61,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "687F87D7724D44681383145A"
+            BlueprintIdentifier = "09B2F02BFE813A4035F63039"
             BuildableName = "ThreeColumnMethod.app"
             BlueprintName = "ThreeColumnMethod"
             ReferencedContainer = "container:ThreeColumnMethod.xcodeproj">

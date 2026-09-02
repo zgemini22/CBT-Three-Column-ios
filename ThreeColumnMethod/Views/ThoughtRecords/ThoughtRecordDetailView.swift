@@ -9,47 +9,50 @@ struct ThoughtRecordDetailView: View {
     @Bindable var record: ThoughtRecord
 
     @State private var showingEdit = false
+    @State private var currentPage = 0
 
     /// Three side-by-side columns only make sense with room to breathe (iPad, or an iPhone in
-    /// landscape with a Plus/Pro Max-class width); otherwise stay stacked so text isn't squeezed
-    /// down to one word per line.
+    /// landscape with a Plus/Pro Max-class width); otherwise switch to three swipeable/tappable
+    /// pages instead of squeezing sentences down to one word per line.
     private var isWideScreen: Bool {
         horizontalSizeClass == .regular
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(t("situation_display_label"))
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(palette.penBlue)
-                        Text(record.situation)
-                            .font(.body)
-                            .italic()
-                        Divider()
-                            .padding(.top, 12)
+        Group {
+            if isWideScreen {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            situationBlock
+                        }
+                        HStack(alignment: .top, spacing: 16) {
+                            automaticThoughtSection.frame(maxWidth: .infinity, alignment: .leading)
+                            Divider()
+                            distortionsSection.frame(maxWidth: .infinity, alignment: .leading)
+                            Divider()
+                            rationalResponseSection.frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
+                    .padding(16)
                 }
-
-                if isWideScreen {
-                    HStack(alignment: .top, spacing: 16) {
-                        automaticThoughtSection.frame(maxWidth: .infinity, alignment: .leading)
-                        Divider()
-                        distortionsSection.frame(maxWidth: .infinity, alignment: .leading)
-                        Divider()
-                        rationalResponseSection.frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                VStack(spacing: 0) {
+                    if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        situationBlock
+                            .padding(16)
                     }
-                } else {
-                    automaticThoughtSection
+                    PageTabRow(pageCount: 3, currentPage: $currentPage)
+                        .padding(.horizontal, 8)
                     Divider()
-                    distortionsSection
-                    Divider()
-                    rationalResponseSection
+                    TabView(selection: $currentPage) {
+                        ScrollView { automaticThoughtSection.padding(16) }.tag(0)
+                        ScrollView { distortionsSection.padding(16) }.tag(1)
+                        ScrollView { rationalResponseSection.padding(16) }.tag(2)
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
                 }
             }
-            .padding(16)
         }
         .background(palette.paper)
         .navigationTitle(record.createdAt.formatted(date: .abbreviated, time: .shortened))
@@ -102,6 +105,20 @@ struct ThoughtRecordDetailView: View {
         lines.append(record.rationalResponse)
         lines.append(t("belief_after_display", record.beliefAfter))
         return lines.joined(separator: "\n")
+    }
+
+    @ViewBuilder
+    private var situationBlock: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(t("situation_display_label"))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(palette.penBlue)
+            Text(record.situation)
+                .font(.body)
+                .italic()
+            Divider()
+                .padding(.top, 12)
+        }
     }
 
     @ViewBuilder
