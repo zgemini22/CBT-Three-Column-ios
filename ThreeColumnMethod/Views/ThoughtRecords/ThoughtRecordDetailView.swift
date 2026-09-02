@@ -108,23 +108,12 @@ struct ThoughtRecordDetailView: View {
     /// Collapsed by default so it doesn't push the record's actual content down the screen.
     @ViewBuilder
     private var summaryCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Button {
-                withAnimation { summaryExpanded.toggle() }
-            } label: {
-                HStack {
-                    Text(t(summaryExpanded ? "summary_hide" : "summary_show"))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(palette.inkFaded)
-                    Spacer()
-                    Image(systemName: summaryExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundStyle(palette.inkFaded)
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-
-            if summaryExpanded {
+        if !summaryExpanded {
+            // Collapsed: a quiet inline link, no card behind it.
+            summaryToggle
+        } else {
+            VStack(alignment: .leading, spacing: 8) {
+                summaryToggle
                 if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     Text(t("situation_display_label"))
                         .font(.subheadline.weight(.semibold))
@@ -152,11 +141,29 @@ struct ThoughtRecordDetailView: View {
                         .foregroundStyle(palette.inkFaded)
                 }
             }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(palette.paperAlt)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(palette.paperAlt)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    /// A deliberately quiet expand/collapse affordance: small, muted, and only as wide as its text.
+    @ViewBuilder
+    private var summaryToggle: some View {
+        Button {
+            withAnimation { summaryExpanded.toggle() }
+        } label: {
+            HStack(spacing: 4) {
+                Text(t(summaryExpanded ? "summary_hide" : "summary_show"))
+                    .font(.caption)
+                Image(systemName: summaryExpanded ? "chevron.up" : "chevron.down")
+                    .font(.caption2)
+            }
+            .foregroundStyle(palette.inkFaded)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
