@@ -5,6 +5,7 @@ struct ThoughtRecordEditView: View {
     @Environment(\.notebookPalette) private var palette
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// nil means "creating a new record"; non-nil means "editing this existing one".
     let record: ThoughtRecord?
@@ -21,6 +22,13 @@ struct ThoughtRecordEditView: View {
         !rationalResponse.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    /// Three side-by-side columns only make sense with room to breathe (iPad, or an iPhone in
+    /// landscape with a Plus/Pro Max-class width); otherwise stay stacked so text fields aren't
+    /// squeezed too narrow to use.
+    private var isWideScreen: Bool {
+        horizontalSizeClass == .regular
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -32,43 +40,19 @@ struct ThoughtRecordEditView: View {
                         .textFieldStyle(.roundedBorder)
                 }
 
-                SectionHeader(number: "1", title: t("section_automatic_thought"))
-                TextField("", text: $automaticThought, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(2...6)
-                    .accessibilityLabel(t("section_automatic_thought"))
-                BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
-
-                SectionHeader(number: "2", title: t("section_distortions"))
-                Text(t("distortions_hint"))
-                    .font(.caption)
-                    .foregroundStyle(palette.inkFaded)
-                FlowLayout(spacing: 8) {
-                    ForEach(CognitiveDistortion.allCases) { distortion in
-                        DistortionChip(
-                            distortion: distortion,
-                            selected: selectedDistortions.contains(distortion)
-                        ) {
-                            if selectedDistortions.contains(distortion) {
-                                selectedDistortions.remove(distortion)
-                            } else {
-                                selectedDistortions.insert(distortion)
-                            }
-                        }
+                if isWideScreen {
+                    HStack(alignment: .top, spacing: 16) {
+                        automaticThoughtColumn.frame(maxWidth: .infinity, alignment: .leading)
+                        Divider()
+                        distortionsColumn.frame(maxWidth: .infinity, alignment: .leading)
+                        Divider()
+                        rationalResponseColumn.frame(maxWidth: .infinity, alignment: .leading)
                     }
+                } else {
+                    automaticThoughtColumn
+                    distortionsColumn
+                    rationalResponseColumn
                 }
-                ForEach(CognitiveDistortion.allCases.filter { selectedDistortions.contains($0) }) { distortion in
-                    Text("\(distortion.label): \(distortion.descriptionText)")
-                        .font(.caption)
-                        .foregroundStyle(palette.inkFaded)
-                }
-
-                SectionHeader(number: "3", title: t("section_rational_response"))
-                TextField("", text: $rationalResponse, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(2...6)
-                    .accessibilityLabel(t("section_rational_response"))
-                BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
             }
             .padding(16)
         }
@@ -127,6 +111,59 @@ struct ThoughtRecordEditView: View {
             modelContext.insert(newRecord)
         }
         dismiss()
+    }
+
+    @ViewBuilder
+    private var automaticThoughtColumn: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            SectionHeader(number: "1", title: t("section_automatic_thought"))
+            TextField("", text: $automaticThought, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
+                .lineLimit(2...6)
+                .accessibilityLabel(t("section_automatic_thought"))
+            BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
+        }
+    }
+
+    @ViewBuilder
+    private var distortionsColumn: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            SectionHeader(number: "2", title: t("section_distortions"))
+            Text(t("distortions_hint"))
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            FlowLayout(spacing: 8) {
+                ForEach(CognitiveDistortion.allCases) { distortion in
+                    DistortionChip(
+                        distortion: distortion,
+                        selected: selectedDistortions.contains(distortion)
+                    ) {
+                        if selectedDistortions.contains(distortion) {
+                            selectedDistortions.remove(distortion)
+                        } else {
+                            selectedDistortions.insert(distortion)
+                        }
+                    }
+                }
+            }
+            ForEach(CognitiveDistortion.allCases.filter { selectedDistortions.contains($0) }) { distortion in
+                Text("\(distortion.label): \(distortion.descriptionText)")
+                    .font(.caption)
+                    .foregroundStyle(palette.inkFaded)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var rationalResponseColumn: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            SectionHeader(number: "3", title: t("section_rational_response"))
+            TextField("", text: $rationalResponse, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
+                .lineLimit(2...6)
+                .accessibilityLabel(t("section_rational_response"))
+            BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
+        }
     }
 }
 

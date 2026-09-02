@@ -5,9 +5,17 @@ struct ThoughtRecordDetailView: View {
     @Environment(\.notebookPalette) private var palette
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Bindable var record: ThoughtRecord
 
     @State private var showingEdit = false
+
+    /// Three side-by-side columns only make sense with room to breathe (iPad, or an iPhone in
+    /// landscape with a Plus/Pro Max-class width); otherwise stay stacked so text isn't squeezed
+    /// down to one word per line.
+    private var isWideScreen: Bool {
+        horizontalSizeClass == .regular
+    }
 
     var body: some View {
         ScrollView {
@@ -25,37 +33,20 @@ struct ThoughtRecordDetailView: View {
                     }
                 }
 
-                DetailSection(number: "1", title: t("section_automatic_thought")) {
-                    Text(record.automaticThought)
-                        .font(.body)
-                    Text(t("belief_before_display", record.beliefBefore))
-                        .font(.caption)
-                        .foregroundStyle(palette.inkFaded)
-                        .padding(.top, 4)
-                }
-
-                Divider()
-
-                DetailSection(number: "2", title: t("section_distortions")) {
-                    if record.distortions.isEmpty {
-                        Text(t("distortions_none_selected"))
-                            .font(.body)
-                            .foregroundStyle(palette.inkFaded)
-                    } else {
-                        Text(record.distortions.map(\.label).joined(separator: " · "))
-                            .font(.body)
+                if isWideScreen {
+                    HStack(alignment: .top, spacing: 16) {
+                        automaticThoughtSection.frame(maxWidth: .infinity, alignment: .leading)
+                        Divider()
+                        distortionsSection.frame(maxWidth: .infinity, alignment: .leading)
+                        Divider()
+                        rationalResponseSection.frame(maxWidth: .infinity, alignment: .leading)
                     }
-                }
-
-                Divider()
-
-                DetailSection(number: "3", title: t("section_rational_response")) {
-                    Text(record.rationalResponse)
-                        .font(.body)
-                    Text(t("belief_after_display", record.beliefAfter))
-                        .font(.caption)
-                        .foregroundStyle(palette.inkFaded)
-                        .padding(.top, 4)
+                } else {
+                    automaticThoughtSection
+                    Divider()
+                    distortionsSection
+                    Divider()
+                    rationalResponseSection
                 }
             }
             .padding(16)
@@ -111,6 +102,44 @@ struct ThoughtRecordDetailView: View {
         lines.append(record.rationalResponse)
         lines.append(t("belief_after_display", record.beliefAfter))
         return lines.joined(separator: "\n")
+    }
+
+    @ViewBuilder
+    private var automaticThoughtSection: some View {
+        DetailSection(number: "1", title: t("section_automatic_thought")) {
+            Text(record.automaticThought)
+                .font(.body)
+            Text(t("belief_before_display", record.beliefBefore))
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+                .padding(.top, 4)
+        }
+    }
+
+    @ViewBuilder
+    private var distortionsSection: some View {
+        DetailSection(number: "2", title: t("section_distortions")) {
+            if record.distortions.isEmpty {
+                Text(t("distortions_none_selected"))
+                    .font(.body)
+                    .foregroundStyle(palette.inkFaded)
+            } else {
+                Text(record.distortions.map(\.label).joined(separator: " · "))
+                    .font(.body)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var rationalResponseSection: some View {
+        DetailSection(number: "3", title: t("section_rational_response")) {
+            Text(record.rationalResponse)
+                .font(.body)
+            Text(t("belief_after_display", record.beliefAfter))
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+                .padding(.top, 4)
+        }
     }
 }
 
