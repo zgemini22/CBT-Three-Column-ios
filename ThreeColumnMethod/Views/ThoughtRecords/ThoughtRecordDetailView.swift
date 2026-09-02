@@ -148,22 +148,23 @@ struct ThoughtRecordDetailView: View {
         }
     }
 
-    /// A deliberately quiet expand/collapse affordance: small, muted, and only as wide as its text.
+    /// A deliberately quiet expand/collapse affordance: a small info icon in the top-right.
     @ViewBuilder
     private var summaryToggle: some View {
-        Button {
-            withAnimation { summaryExpanded.toggle() }
-        } label: {
-            HStack(spacing: 4) {
-                Text(t(summaryExpanded ? "summary_hide" : "summary_show"))
-                    .font(.caption)
-                Image(systemName: summaryExpanded ? "chevron.up" : "chevron.down")
-                    .font(.caption2)
+        HStack {
+            Spacer()
+            Button {
+                withAnimation { summaryExpanded.toggle() }
+            } label: {
+                Image(systemName: "info.circle")
+                    .font(.footnote)
+                    .foregroundStyle(palette.inkFaded)
+                    .padding(4)
+                    .contentShape(Rectangle())
             }
-            .foregroundStyle(palette.inkFaded)
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
+            .accessibilityLabel(t(summaryExpanded ? "summary_hide" : "summary_show"))
         }
-        .buttonStyle(.plain)
     }
 
     @ViewBuilder
