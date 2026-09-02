@@ -36,7 +36,9 @@ struct ThoughtRecordEditView: View {
             if isWideScreen {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        summaryCard
+                        if summaryExpanded {
+                            summaryCard
+                        }
                         HStack(alignment: .top, spacing: 16) {
                             automaticThoughtColumn.frame(maxWidth: .infinity, alignment: .leading)
                             Divider()
@@ -49,8 +51,10 @@ struct ThoughtRecordEditView: View {
                 }
             } else {
                 VStack(spacing: 0) {
-                    summaryCard
-                        .padding(16)
+                    if summaryExpanded {
+                        summaryCard
+                            .padding(16)
+                    }
                     PageTabRow(pageCount: 3, currentPage: $currentPage)
                         .padding(.horizontal, 8)
                     Divider()
@@ -69,6 +73,14 @@ struct ThoughtRecordEditView: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(t("back_desc")) { dismiss() }
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    withAnimation { summaryExpanded.toggle() }
+                } label: {
+                    Image(systemName: "info.circle")
+                }
+                .accessibilityLabel(t(summaryExpanded ? "summary_hide" : "summary_show"))
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button {
@@ -121,59 +133,34 @@ struct ThoughtRecordEditView: View {
     }
 
     /// Situation, the three section titles, and the before/after belief sliders once, in one place.
-    /// Collapsed by default so the thought/response fields stay at the top of the screen.
+    /// Shown only when toggled on via the info icon in the toolbar.
     @ViewBuilder
     private var summaryCard: some View {
-        if !summaryExpanded {
-            // Collapsed: a quiet inline link, no card behind it.
-            summaryToggle
-        } else {
-            VStack(alignment: .leading, spacing: 12) {
-                summaryToggle
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(t("situation_label"))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(palette.inkFaded)
-                    TextField(t("situation_placeholder"), text: $situation, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                }
-                Divider()
-                Text("1. \(t("section_automatic_thought"))")
-                    .font(.caption)
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(t("situation_label"))
+                    .font(.subheadline.weight(.semibold))
                     .foregroundStyle(palette.inkFaded)
-                Text("2. \(t("section_distortions"))")
-                    .font(.caption)
-                    .foregroundStyle(palette.inkFaded)
-                Text("3. \(t("section_rational_response"))")
-                    .font(.caption)
-                    .foregroundStyle(palette.inkFaded)
-                BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
-                BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
+                TextField(t("situation_placeholder"), text: $situation, axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
             }
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(palette.paperAlt)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            Divider()
+            Text("1. \(t("section_automatic_thought"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            Text("2. \(t("section_distortions"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            Text("3. \(t("section_rational_response"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
+            BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
         }
-    }
-
-    /// A deliberately quiet expand/collapse affordance: a small info icon in the top-right.
-    @ViewBuilder
-    private var summaryToggle: some View {
-        HStack {
-            Spacer()
-            Button {
-                withAnimation { summaryExpanded.toggle() }
-            } label: {
-                Image(systemName: "info.circle")
-                    .font(.footnote)
-                    .foregroundStyle(palette.inkFaded)
-                    .padding(4)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(t(summaryExpanded ? "summary_hide" : "summary_show"))
-        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(palette.paperAlt)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     @ViewBuilder

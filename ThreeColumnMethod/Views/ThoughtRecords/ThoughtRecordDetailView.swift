@@ -24,7 +24,9 @@ struct ThoughtRecordDetailView: View {
             if isWideScreen {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        summaryCard
+                        if summaryExpanded {
+                            summaryCard
+                        }
                         HStack(alignment: .top, spacing: 16) {
                             automaticThoughtSection.frame(maxWidth: .infinity, alignment: .leading)
                             Divider()
@@ -37,8 +39,10 @@ struct ThoughtRecordDetailView: View {
                 }
             } else {
                 VStack(spacing: 0) {
-                    summaryCard
-                        .padding(16)
+                    if summaryExpanded {
+                        summaryCard
+                            .padding(16)
+                    }
                     PageTabRow(pageCount: 3, currentPage: $currentPage)
                         .padding(.horizontal, 8)
                     Divider()
@@ -56,6 +60,13 @@ struct ThoughtRecordDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
+                Button {
+                    withAnimation { summaryExpanded.toggle() }
+                } label: {
+                    Image(systemName: "info.circle")
+                }
+                .accessibilityLabel(t(summaryExpanded ? "summary_hide" : "summary_show"))
+
                 ShareLink(item: shareText) {
                     Image(systemName: "square.and.arrow.up")
                 }
@@ -105,66 +116,41 @@ struct ThoughtRecordDetailView: View {
     }
 
     /// Situation, the three section titles, and the before/after belief once, in one place.
-    /// Collapsed by default so it doesn't push the record's actual content down the screen.
+    /// Shown only when toggled on via the info icon in the toolbar.
     @ViewBuilder
     private var summaryCard: some View {
-        if !summaryExpanded {
-            // Collapsed: a quiet inline link, no card behind it.
-            summaryToggle
-        } else {
-            VStack(alignment: .leading, spacing: 8) {
-                summaryToggle
-                if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    Text(t("situation_display_label"))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(palette.penBlue)
-                    Text(record.situation)
-                        .font(.body)
-                        .italic()
-                    Divider()
-                }
-                Text("1. \(t("section_automatic_thought"))")
-                    .font(.caption)
-                    .foregroundStyle(palette.inkFaded)
-                Text("2. \(t("section_distortions"))")
-                    .font(.caption)
-                    .foregroundStyle(palette.inkFaded)
-                Text("3. \(t("section_rational_response"))")
-                    .font(.caption)
-                    .foregroundStyle(palette.inkFaded)
-                HStack(spacing: 16) {
-                    Text(t("belief_before_display", record.beliefBefore))
-                        .font(.caption)
-                        .foregroundStyle(palette.inkFaded)
-                    Text(t("belief_after_display", record.beliefAfter))
-                        .font(.caption)
-                        .foregroundStyle(palette.inkFaded)
-                }
+        VStack(alignment: .leading, spacing: 8) {
+            if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Text(t("situation_display_label"))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(palette.penBlue)
+                Text(record.situation)
+                    .font(.body)
+                    .italic()
+                Divider()
             }
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(palette.paperAlt)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-        }
-    }
-
-    /// A deliberately quiet expand/collapse affordance: a small info icon in the top-right.
-    @ViewBuilder
-    private var summaryToggle: some View {
-        HStack {
-            Spacer()
-            Button {
-                withAnimation { summaryExpanded.toggle() }
-            } label: {
-                Image(systemName: "info.circle")
-                    .font(.footnote)
+            Text("1. \(t("section_automatic_thought"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            Text("2. \(t("section_distortions"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            Text("3. \(t("section_rational_response"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            HStack(spacing: 16) {
+                Text(t("belief_before_display", record.beliefBefore))
+                    .font(.caption)
                     .foregroundStyle(palette.inkFaded)
-                    .padding(4)
-                    .contentShape(Rectangle())
+                Text(t("belief_after_display", record.beliefAfter))
+                    .font(.caption)
+                    .foregroundStyle(palette.inkFaded)
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(t(summaryExpanded ? "summary_hide" : "summary_show"))
         }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(palette.paperAlt)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     @ViewBuilder
