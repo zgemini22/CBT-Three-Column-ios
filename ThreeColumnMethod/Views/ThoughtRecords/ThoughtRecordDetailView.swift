@@ -23,9 +23,7 @@ struct ThoughtRecordDetailView: View {
             if isWideScreen {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            situationBlock
-                        }
+                        summaryCard
                         HStack(alignment: .top, spacing: 16) {
                             automaticThoughtSection.frame(maxWidth: .infinity, alignment: .leading)
                             Divider()
@@ -38,10 +36,8 @@ struct ThoughtRecordDetailView: View {
                 }
             } else {
                 VStack(spacing: 0) {
-                    if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        situationBlock
-                            .padding(16)
-                    }
+                    summaryCard
+                        .padding(16)
                     PageTabRow(pageCount: 3, currentPage: $currentPage)
                         .padding(.horizontal, 8)
                     Divider()
@@ -107,71 +103,64 @@ struct ThoughtRecordDetailView: View {
         return lines.joined(separator: "\n")
     }
 
+    /// Situation, the three section titles, and the before/after belief once, in one place.
     @ViewBuilder
-    private var situationBlock: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(t("situation_display_label"))
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(palette.penBlue)
-            Text(record.situation)
-                .font(.body)
-                .italic()
-            Divider()
-                .padding(.top, 12)
+    private var summaryCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if !record.situation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Text(t("situation_display_label"))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(palette.penBlue)
+                Text(record.situation)
+                    .font(.body)
+                    .italic()
+                Divider()
+            }
+            Text("1. \(t("section_automatic_thought"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            Text("2. \(t("section_distortions"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            Text("3. \(t("section_rational_response"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            HStack(spacing: 16) {
+                Text(t("belief_before_display", record.beliefBefore))
+                    .font(.caption)
+                    .foregroundStyle(palette.inkFaded)
+                Text(t("belief_after_display", record.beliefAfter))
+                    .font(.caption)
+                    .foregroundStyle(palette.inkFaded)
+            }
         }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(palette.paperAlt)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     @ViewBuilder
     private var automaticThoughtSection: some View {
-        DetailSection(number: "1", title: t("section_automatic_thought")) {
-            Text(record.automaticThought)
-                .font(.body)
-            Text(t("belief_before_display", record.beliefBefore))
-                .font(.caption)
-                .foregroundStyle(palette.inkFaded)
-                .padding(.top, 4)
-        }
+        Text(record.automaticThought)
+            .font(.body)
     }
 
     @ViewBuilder
     private var distortionsSection: some View {
-        DetailSection(number: "2", title: t("section_distortions")) {
-            if record.distortions.isEmpty {
-                Text(t("distortions_none_selected"))
-                    .font(.body)
-                    .foregroundStyle(palette.inkFaded)
-            } else {
-                Text(record.distortions.map(\.label).joined(separator: " · "))
-                    .font(.body)
-            }
+        if record.distortions.isEmpty {
+            Text(t("distortions_none_selected"))
+                .font(.body)
+                .foregroundStyle(palette.inkFaded)
+        } else {
+            Text(record.distortions.map(\.label).joined(separator: " · "))
+                .font(.body)
         }
     }
 
     @ViewBuilder
     private var rationalResponseSection: some View {
-        DetailSection(number: "3", title: t("section_rational_response")) {
-            Text(record.rationalResponse)
-                .font(.body)
-            Text(t("belief_after_display", record.beliefAfter))
-                .font(.caption)
-                .foregroundStyle(palette.inkFaded)
-                .padding(.top, 4)
-        }
-    }
-}
-
-private struct DetailSection<Content: View>: View {
-    @Environment(\.notebookPalette) private var palette
-    let number: String
-    let title: String
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("\(number). \(title)")
-                .font(.caption)
-                .foregroundStyle(palette.inkFaded)
-            content
-        }
+        Text(record.rationalResponse)
+            .font(.body)
     }
 }

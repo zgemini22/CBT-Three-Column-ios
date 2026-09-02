@@ -35,7 +35,7 @@ struct ThoughtRecordEditView: View {
             if isWideScreen {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        situationField
+                        summaryCard
                         HStack(alignment: .top, spacing: 16) {
                             automaticThoughtColumn.frame(maxWidth: .infinity, alignment: .leading)
                             Divider()
@@ -48,7 +48,7 @@ struct ThoughtRecordEditView: View {
                 }
             } else {
                 VStack(spacing: 0) {
-                    situationField
+                    summaryCard
                         .padding(16)
                     PageTabRow(pageCount: 3, currentPage: $currentPage)
                         .padding(.horizontal, 8)
@@ -119,33 +119,47 @@ struct ThoughtRecordEditView: View {
         dismiss()
     }
 
+    /// Situation, the three section titles, and the before/after belief sliders once, in one place.
     @ViewBuilder
-    private var situationField: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(t("situation_label"))
-                .font(.subheadline.weight(.semibold))
+    private var summaryCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(t("situation_label"))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(palette.inkFaded)
+                TextField(t("situation_placeholder"), text: $situation, axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
+            }
+            Divider()
+            Text("1. \(t("section_automatic_thought"))")
+                .font(.caption)
                 .foregroundStyle(palette.inkFaded)
-            TextField(t("situation_placeholder"), text: $situation, axis: .vertical)
-                .textFieldStyle(.roundedBorder)
+            Text("2. \(t("section_distortions"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            Text("3. \(t("section_rational_response"))")
+                .font(.caption)
+                .foregroundStyle(palette.inkFaded)
+            BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
+            BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
         }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(palette.paperAlt)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     @ViewBuilder
     private var automaticThoughtColumn: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            SectionHeader(number: "1", title: t("section_automatic_thought"))
-            TextField("", text: $automaticThought, axis: .vertical)
-                .textFieldStyle(.roundedBorder)
-                .lineLimit(2...6)
-                .accessibilityLabel(t("section_automatic_thought"))
-            BeliefSlider(label: t("belief_before_label"), value: $beliefBefore)
-        }
+        TextField("", text: $automaticThought, axis: .vertical)
+            .textFieldStyle(.roundedBorder)
+            .lineLimit(2...6)
+            .accessibilityLabel(t("section_automatic_thought"))
     }
 
     @ViewBuilder
     private var distortionsColumn: some View {
         VStack(alignment: .leading, spacing: 8) {
-            SectionHeader(number: "2", title: t("section_distortions"))
             Text(t("distortions_hint"))
                 .font(.caption)
                 .foregroundStyle(palette.inkFaded)
@@ -173,26 +187,10 @@ struct ThoughtRecordEditView: View {
 
     @ViewBuilder
     private var rationalResponseColumn: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            SectionHeader(number: "3", title: t("section_rational_response"))
-            TextField("", text: $rationalResponse, axis: .vertical)
-                .textFieldStyle(.roundedBorder)
-                .lineLimit(2...6)
-                .accessibilityLabel(t("section_rational_response"))
-            BeliefSlider(label: t("belief_after_label"), value: $beliefAfter)
-        }
-    }
-}
-
-private struct SectionHeader: View {
-    @Environment(\.notebookPalette) private var palette
-    let number: String
-    let title: String
-
-    var body: some View {
-        Text("\(number). \(title)")
-            .font(.caption)
-            .foregroundStyle(palette.inkFaded)
+        TextField("", text: $rationalResponse, axis: .vertical)
+            .textFieldStyle(.roundedBorder)
+            .lineLimit(2...6)
+            .accessibilityLabel(t("section_rational_response"))
     }
 }
 
